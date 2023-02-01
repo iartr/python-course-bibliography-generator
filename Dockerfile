@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.4
-FROM python:3.10-slim
+FROM python:3.10
 
 ENV ENV=${ENV} \
   PYTHONFAULTHANDLER=1 \
@@ -28,3 +28,4 @@ WORKDIR /src
 # root is used as a hotfix for package introspection problem
 # https://intellij-support.jetbrains.com/hc/en-us/community/posts/115000373944/comments/7286554132370
 USER root
+# RUN chmod 655 *

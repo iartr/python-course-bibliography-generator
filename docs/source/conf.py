@@ -17,8 +17,8 @@ sys.path.insert(0, os.path.abspath("../../src"))
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "Оформление библиографического списка"
-copyright = f"{date.today().year}, Michael"
-author = "Michael"
+copyright = f"{date.today().year}, Artur"
+author = "Artur"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -32,4 +32,4 @@ language = "en, ru"
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = "sphinx_rtd_theme"
+html_theme = "furo"

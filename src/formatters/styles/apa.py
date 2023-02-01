@@ -1,6 +1,3 @@
-"""
-Стиль цитирования по ГОСТ Р 7.0.5-2008.
-"""
 from string import Template
 
 from src.formatters.base import BaseCitationFormatter
@@ -19,8 +16,7 @@ from src.logger import get_logger
 
 logger = get_logger(__name__)
 
-
-class GOSTBook(BaseCitationStyle):
+class APABook(BaseCitationStyle):
     """
     Форматирование для книг.
     """
@@ -29,9 +25,7 @@ class GOSTBook(BaseCitationStyle):
 
     @property
     def template(self) -> Template:
-        return Template(
-            "$authors $title. – $edition$city: $publishing_house, $year. – $pages с."
-        )
+        return Template("$authors ($year) $title ($edition) $city: $publishing_house, $pages p.")
 
     def substitute(self) -> str:
         logger.info('Форматирование книги "%s" ...', self.data.title)
@@ -49,7 +43,7 @@ class GOSTBook(BaseCitationStyle):
         return f"{self.data.edition} изд. – " if self.data.edition else ""
 
 
-class GOSTInternetResource(BaseCitationStyle):
+class APAInternetResource(BaseCitationStyle):
     """
     Форматирование для интернет-ресурсов.
     """
@@ -58,16 +52,14 @@ class GOSTInternetResource(BaseCitationStyle):
 
     @property
     def template(self) -> Template:
-        return Template(
-            "$article // $website URL: $link (дата обращения: $access_date)."
-        )
+        return Template("$website ($access_date) $article $link")
 
     def substitute(self) -> str:
-        logger.info('Форматирование интернет-ресурса "%s" ...', self.data.article)
+        logger.info('Форматирование из интернета "%s" ...', self.data.article)
         return self.template.substitute(self.data.dict())
 
 
-class GOSTCollectionArticle(BaseCitationStyle):
+class APACollectionArticle(BaseCitationStyle):
     """
     Форматирование для статьи из сборника.
     """
@@ -77,7 +69,7 @@ class GOSTCollectionArticle(BaseCitationStyle):
     @property
     def template(self) -> Template:
         return Template(
-            "$authors $article_title // $collection_title. – $city: $publishing_house, $year. – С. $pages."
+            "$authors ($year) $article_title, $collection_title $city: $publishing_house, $pages p."
         )
 
     def substitute(self) -> str:
@@ -86,13 +78,13 @@ class GOSTCollectionArticle(BaseCitationStyle):
         return self.template.substitute(self.data.dict())
 
 
-class GOSTDissertation(BaseCitationStyle):
+class APADissertation(BaseCitationStyle):
     data: DissertationModel
 
     @property
     def template(self) -> Template:
         return Template(
-            "$author $title: дис. $author_title $speciality_field: $speciality_code $city $year. $pages c."
+            "$author ($year) $title, дис. [$author_title $speciality_field $speciality_code] $city, $pages p."
         )
 
     def substitute(self) -> str:
@@ -101,13 +93,13 @@ class GOSTDissertation(BaseCitationStyle):
         return self.template.substitute(self.data.dict())
 
 
-class GOSTAutoReport(BaseCitationStyle):
+class APAAutoReport(BaseCitationStyle):
     data: AutoReportModel
 
     @property
     def template(self) -> Template:
         return Template(
-            "$author $title: автореф. дис. $author_title $speciality_field: $speciality_code $city $year. $pages c."
+            "$author ($year) $title, автореф. дис. [$author_title $speciality_field $speciality_code] $city, $pages p."
         )
 
     def substitute(self) -> str:
@@ -116,12 +108,12 @@ class GOSTAutoReport(BaseCitationStyle):
         return self.template.substitute(self.data.dict())
 
 
-class GOSTJournalArticle(BaseCitationStyle):
+class APAJournalArticle(BaseCitationStyle):
     data: JournalArticleModel
 
     @property
     def template(self) -> Template:
-        return Template("$authors $title // $journal. $year. № $volume. С. $pages.")
+        return Template("$authors ($year) $title. $journal, $volume $pages p.")
 
     def substitute(self) -> str:
         logger.info('Форматирование статьи "%s" ...', self.data.title)
@@ -129,13 +121,13 @@ class GOSTJournalArticle(BaseCitationStyle):
         return self.template.substitute(self.data.dict())
 
 
-class GOSTRegulationAct(BaseCitationStyle):
+class APARegulationAct(BaseCitationStyle):
     data: RegulationActModel
 
     @property
     def template(self) -> Template:
         return Template(
-            "$title: $act_type от $accept_date. №$act_number: в ред. от $edition // $official_source $publication_year"
+            "($publication_year) $title, $act_type, $official_source, $act_number, edited $edition"
         )
 
     def substitute(self) -> str:
@@ -144,17 +136,17 @@ class GOSTRegulationAct(BaseCitationStyle):
         return self.template.substitute(self.data.dict())
 
 
-class GOSTCitationFormatter(BaseCitationFormatter):
+class APACitationFormatter(BaseCitationFormatter):
     """
     Базовый класс для итогового форматирования списка источников.
     """
 
     formatters_map: dict[type[CiteModel], type[BaseCitationStyle]] = {
-        BookModel: GOSTBook,
-        InternetResourceModel: GOSTInternetResource,
-        ArticlesCollectionModel: GOSTCollectionArticle,
-        DissertationModel: GOSTDissertation,
-        AutoReportModel: GOSTAutoReport,
-        JournalArticleModel: GOSTJournalArticle,
-        RegulationActModel: GOSTRegulationAct,
+        BookModel: APABook,
+        InternetResourceModel: APAInternetResource,
+        ArticlesCollectionModel: APACollectionArticle,
+        DissertationModel: APADissertation,
+        AutoReportModel: APAAutoReport,
+        JournalArticleModel: APAJournalArticle,
+        RegulationActModel: APARegulationAct,
     }
