@@ -6,8 +6,8 @@ from abc import ABC, abstractmethod
 
 from openpyxl.workbook import Workbook
 
-from src.formatters.models import CiteModel
-from src.logger import get_logger
+from formatters.models import CiteModel
+from logger import get_logger
 
 logger = get_logger(__name__)
 

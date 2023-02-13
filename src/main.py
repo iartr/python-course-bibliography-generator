@@ -5,14 +5,14 @@ from enum import Enum, unique
 
 import click
 
-from src.formatters.base import BaseCitationFormatter
-from src.formatters.styles.apa import APACitationFormatter
-from src.formatters.styles.gost import GOSTCitationFormatter
-from src.logger import get_logger
-from src.readers.reader import SourcesReader
-from src.renderer import Renderer
-from src.readers.renderer import APARenderer, GOSTRenderer
-from src.settings import INPUT_FILE_PATH, OUTPUT_FILE_PATH
+from formatters.base import BaseCitationFormatter
+from formatters.styles.apa import APACitationFormatter
+from formatters.styles.gost import GOSTCitationFormatter
+from logger import get_logger
+from readers.reader import SourcesReader
+from renderer import Renderer
+from readers.renderer import APARenderer, GOSTRenderer
+from settings import INPUT_FILE_PATH, OUTPUT_FILE_PATH
 
 logger = get_logger(__name__)
 

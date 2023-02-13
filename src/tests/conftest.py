@@ -5,7 +5,7 @@ from datetime import date
 
 import pytest
 
-from src.formatters.models import (
+from formatters.models import (
     ArticlesCollectionModel,
     AutoReportModel,
     BookModel,

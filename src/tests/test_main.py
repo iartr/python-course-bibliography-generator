@@ -1,11 +1,11 @@
 import pytest
 
-from src.formatters.base import BaseCitationFormatter
-from src.formatters.styles.apa import APACitationFormatter
-from src.formatters.styles.gost import GOSTCitationFormatter
-from src.main import CitationEnum, get_citation_classes
-from src.renderer import Renderer
-from src.readers.renderer import APARenderer, GOSTRenderer
+from formatters.base import BaseCitationFormatter
+from formatters.styles.apa import APACitationFormatter
+from formatters.styles.gost import GOSTCitationFormatter
+from main import CitationEnum, get_citation_classes
+from renderer import Renderer
+from readers.renderer import APARenderer, GOSTRenderer
 
 
 @pytest.mark.parametrize(

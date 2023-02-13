@@ -6,7 +6,7 @@ from datetime import date
 import pytest
 from openpyxl.workbook import Workbook
 
-from src.formatters.models import (
+from formatters.models import (
     ArticlesCollectionModel,
     AutoReportModel,
     BookModel,
@@ -15,7 +15,7 @@ from src.formatters.models import (
     JournalArticleModel,
     RegulationActModel,
 )
-from src.readers.reader import (
+from readers.reader import (
     ArticlesCollectionReader,
     AutoReportReader,
     BookReader,
@@ -25,7 +25,7 @@ from src.readers.reader import (
     RegulationActReader,
     SourcesReader,
 )
-from src.settings import TEMPLATE_FILE_PATH
+from settings import TEMPLATE_FILE_PATH
 
 
 class TestReaders:

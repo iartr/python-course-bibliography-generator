@@ -2,7 +2,7 @@
 Тестирование функций оформления списка источников по APA
 """
 
-from src.formatters.models import (
+from formatters.models import (
     ArticlesCollectionModel,
     AutoReportModel,
     BookModel,
@@ -11,7 +11,7 @@ from src.formatters.models import (
     JournalArticleModel,
     RegulationActModel,
 )
-from src.formatters.styles.apa import (
+from formatters.styles.apa import (
     APAAutoReport,
     APABook,
     APACitationFormatter,

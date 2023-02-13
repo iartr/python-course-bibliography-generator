@@ -28,4 +28,4 @@ WORKDIR /src
 # root is used as a hotfix for package introspection problem
 # https://intellij-support.jetbrains.com/hc/en-us/community/posts/115000373944/comments/7286554132370
 USER root
-# RUN chmod 655 *
+RUN chmod 655 *

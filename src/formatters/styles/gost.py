@@ -3,8 +3,8 @@
 """
 from string import Template
 
-from src.formatters.base import BaseCitationFormatter
-from src.formatters.models import (
+from formatters.base import BaseCitationFormatter
+from formatters.models import (
     ArticlesCollectionModel,
     AutoReportModel,
     BookModel,
@@ -14,8 +14,8 @@ from src.formatters.models import (
     JournalArticleModel,
     RegulationActModel,
 )
-from src.formatters.styles.base import BaseCitationStyle
-from src.logger import get_logger
+from formatters.styles.base import BaseCitationStyle
+from logger import get_logger
 
 logger = get_logger(__name__)
 

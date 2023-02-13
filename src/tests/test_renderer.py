@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from src.readers.renderer import APARenderer, GOSTRenderer
+from readers.renderer import APARenderer, GOSTRenderer
 
 
 class TestRenderer:

@@ -5,7 +5,7 @@
 import openpyxl
 from openpyxl.workbook import Workbook
 
-from src.formatters.models import (
+from formatters.models import (
     ArticlesCollectionModel,
     AutoReportModel,
     BookModel,
@@ -15,8 +15,8 @@ from src.formatters.models import (
     JournalArticleModel,
     RegulationActModel,
 )
-from src.logger import get_logger
-from src.readers.base import BaseReader
+from logger import get_logger
+from readers.base import BaseReader
 
 logger = get_logger(__name__)
 

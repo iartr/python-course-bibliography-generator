@@ -1,4 +1,4 @@
-from src.formatters.models import (
+from formatters.models import (
     ArticlesCollectionModel,
     AutoReportModel,
     BookModel,
@@ -7,7 +7,7 @@ from src.formatters.models import (
     JournalArticleModel,
     RegulationActModel,
 )
-from src.formatters.styles.gost import (
+from formatters.styles.gost import (
     GOSTAutoReport,
     GOSTBook,
     GOSTCitationFormatter,
