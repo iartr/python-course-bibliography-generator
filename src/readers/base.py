@@ -3,12 +3,10 @@
 """
 
 from abc import ABC, abstractmethod
-from datetime import date
-from typing import Type
 
 from openpyxl.workbook import Workbook
-from pydantic import BaseModel
 
+from formatters.models import CiteModel
 from logger import get_logger
 
 logger = get_logger(__name__)
@@ -30,7 +28,7 @@ class BaseReader(ABC):
 
     @property
     @abstractmethod
-    def model(self) -> Type[BaseModel]:
+    def model(self) -> type[CiteModel]:
         """
         Получение модели объекта (строки).
 
@@ -55,19 +53,19 @@ class BaseReader(ABC):
         .. code-block::
 
             {
-                "authors": {0: str},
-                "title": {1: str},
-                "edition": {2: str},
-                "city": {3: str},
-                "publishing_house": {4: str},
-                "year": {5: int},
-                "pages": {6: int},
+                "authors": 0,
+                "title": 1,
+                "edition": 2,
+                "city": 3,
+                "publishing_house": 4,
+                "year": 5,
+                "pages": 6,
             }
 
         :return: Атрибуты с информацией об индексе столбца и типе данных
         """
 
-    def read(self) -> list[BaseModel]:
+    def read(self) -> list[CiteModel]:
         """
         Чтение исходного файла.
 
@@ -78,29 +76,12 @@ class BaseReader(ABC):
         # чтение со второй строки таблицы (первая строка содержит заголовок)
         for row in self.workbook[self.sheet].iter_rows(min_row=2):
             # обработка строки идет только, если заполнены обязательные столбцы
-            if row[0].value:
-                attrs = {}
+            if not row[0].value:
+                continue
+            # обработка заданных в методе `attributes()` атрибутов
+            attrs = {attr: row[index].value for attr, index in self.attributes.items()}
 
-                # обработка заданных в методе `attributes()` атрибутов
-                for attr, params in self.attributes.items():
-                    index, data_type = list(params.items())[0]
-                    attrs[attr] = row[index].value
-
-                    if not attrs[attr]:
-                        continue
-
-                    if data_type is int:
-                        attrs[attr] = int(str(attrs.get(attr)))
-
-                    if data_type is str:
-                        attrs[attr] = str(attrs.get(attr)).strip()
-
-                    if data_type is date:
-                        value = attrs.get(attr)
-                        if isinstance(value, date):
-                            attrs[attr] = value.strftime("%d.%m.%Y")
-
-                # добавление считанной и обработанной строки в список моделей
-                models.append(self.model(**attrs))
+            # добавление считанной и обработанной строки в список моделей
+            models.append(self.model(**attrs))
 
         return models

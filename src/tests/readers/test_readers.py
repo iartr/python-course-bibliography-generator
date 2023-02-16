@@ -1,16 +1,29 @@
 """
 Тестирование функций чтения данных из источника.
 """
-from typing import Any
+from datetime import date
 
 import pytest
+from openpyxl.workbook import Workbook
 
-from formatters.models import BookModel, InternetResourceModel, ArticlesCollectionModel
+from formatters.models import (
+    ArticlesCollectionModel,
+    AutoReportModel,
+    BookModel,
+    DissertationModel,
+    InternetResourceModel,
+    JournalArticleModel,
+    RegulationActModel,
+)
 from readers.reader import (
-    BookReader,
-    SourcesReader,
-    InternetResourceReader,
     ArticlesCollectionReader,
+    AutoReportReader,
+    BookReader,
+    DissertationReader,
+    InternetResourceReader,
+    JournalArticleReader,
+    RegulationActReader,
+    SourcesReader,
 )
 from settings import TEMPLATE_FILE_PATH
 
@@ -21,7 +34,7 @@ class TestReaders:
     """
 
     @pytest.fixture
-    def workbook(self) -> Any:
+    def workbook(self) -> Workbook:
         """
          Получение объекта тестовой рабочей книги.
         :return:
@@ -29,7 +42,7 @@ class TestReaders:
 
         return SourcesReader(TEMPLATE_FILE_PATH).workbook
 
-    def test_book(self, workbook: Any) -> None:
+    def test_book(self, workbook: Workbook) -> None:
         """
         Тестирование чтения книги.
 
@@ -55,7 +68,7 @@ class TestReaders:
         # проверка общего количества атрибутов
         assert len(model_type.schema().get("properties", {}).keys()) == 7
 
-    def test_internet_resource(self, workbook: Any) -> None:
+    def test_internet_resource(self, workbook: Workbook) -> None:
         """
         Тестирование чтения интернет-ресурса.
 
@@ -73,12 +86,12 @@ class TestReaders:
         assert model.article == "Наука как искусство"
         assert model.website == "Ведомости"
         assert model.link == "https://www.vedomosti.ru"
-        assert model.access_date == "01.01.2021"
+        assert model.access_date == date(2021, 1, 1)
 
         # проверка общего количества атрибутов
         assert len(model_type.schema().get("properties", {}).keys()) == 4
 
-    def test_articles_collection(self, workbook: Any) -> None:
+    def test_articles_collection(self, workbook: Workbook) -> None:
         """
         Тестирование чтения сборника статей.
 
@@ -111,12 +124,99 @@ class TestReaders:
 
         models = SourcesReader(TEMPLATE_FILE_PATH).read()
         # проверка общего считанного количества моделей
-        assert len(models) == 8
+        assert len(models) == 12
 
         # проверка наличия всех ожидаемых типов моделей среди типов считанных моделей
-        model_types = {model.__class__.__name__ for model in models}
+        model_types = {model.__class__ for model in models}
         assert model_types == {
-            BookModel.__name__,
-            InternetResourceModel.__name__,
-            ArticlesCollectionModel.__name__,
+            BookModel,
+            InternetResourceModel,
+            ArticlesCollectionModel,
+            JournalArticleModel,
+            DissertationModel,
+            RegulationActModel,
+            AutoReportModel,
         }
+
+    def test_dissertation_reader(self, workbook: Workbook) -> None:
+        models = DissertationReader(workbook).read()
+
+        assert len(models) == 1
+        model = models[0]
+
+        model_type = DissertationModel
+
+        assert isinstance(model, model_type)
+        assert model.author == "Иванов И.М."
+        assert model.title == "Наука как искусство"
+        assert model.author_title == "д-р. / канд."
+        assert model.speciality_field == "экон."
+        assert model.speciality_code == "01.01.01"
+        assert model.city == "СПб."
+        assert model.year == 2020
+        assert model.pages == 199
+
+        # проверка общего количества атрибутов
+        assert len(model_type.schema().get("properties", {}).keys()) == 8
+
+    def test_auto_report_reader(self, workbook: Workbook) -> None:
+        models = AutoReportReader(workbook).read()
+
+        assert len(models) == 1
+        model = models[0]
+
+        model_type = AutoReportModel
+
+        assert isinstance(model, model_type)
+        assert model.author == "Иванов И.М."
+        assert model.title == "Наука как искусство"
+        assert model.author_title == "д-р. / канд."
+        assert model.speciality_field == "экон."
+        assert model.speciality_code == "01.01.01"
+        assert model.city == "СПб."
+        assert model.year == 2020
+        assert model.pages == 199
+
+        # проверка общего количества атрибутов
+        assert len(model_type.schema().get("properties", {}).keys()) == 8
+
+    def test_journal_article(self, workbook: Workbook) -> None:
+        models = JournalArticleReader(workbook).read()
+
+        assert len(models) == 1
+        model = models[0]
+
+        model_type = JournalArticleModel
+
+        assert isinstance(model, model_type)
+        assert model.authors == "Иванов И.М., Петров С.Н."
+        assert model.title == "Наука как искусство"
+        assert model.journal == "Образование и наука"
+        assert model.year == 2020
+        assert model.volume == 10
+        assert model.pages == "25-30"
+
+        # проверка общего количества атрибутов
+        assert len(model_type.schema().get("properties", {}).keys()) == 6
+
+    def test_regulation_act_reader(self, workbook: Workbook) -> None:
+        models = RegulationActReader(workbook).read()
+
+        assert len(models) == 1
+        model = models[0]
+
+        model_type = RegulationActModel
+
+        assert isinstance(model, model_type)
+        assert model.act_type == "Конституция Российской Федерации"
+        assert model.title == "Наука как искусство"
+        assert model.accept_date == date(2000, 1, 1)
+        assert model.act_number == "1234-56"
+        assert model.official_source == "Парламентская газета"
+        assert model.publication_year == 2020
+        assert model.version == 5
+        assert model.article_number == 15
+        assert model.edition == date(2002, 9, 11)
+
+        # проверка общего количества атрибутов
+        assert len(model_type.schema().get("properties", {}).keys()) == 9

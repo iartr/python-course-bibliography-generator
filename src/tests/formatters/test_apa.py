@@ -1,3 +1,7 @@
+"""
+Тестирование функций оформления списка источников по APA
+"""
+
 from formatters.models import (
     ArticlesCollectionModel,
     AutoReportModel,
@@ -7,19 +11,19 @@ from formatters.models import (
     JournalArticleModel,
     RegulationActModel,
 )
-from formatters.styles.gost import (
-    GOSTAutoReport,
-    GOSTBook,
-    GOSTCitationFormatter,
-    GOSTCollectionArticle,
-    GOSTDissertation,
-    GOSTInternetResource,
-    GOSTJournalArticle,
-    GOSTRegulationAct,
+from formatters.styles.apa import (
+    APAAutoReport,
+    APABook,
+    APACitationFormatter,
+    APACollectionArticle,
+    APADissertation,
+    APAInternetResource,
+    APAJournalArticle,
+    APARegulationAct,
 )
 
 
-class TestGOST:
+class TestAPA:
     """
     Тестирование оформления списка источников согласно ГОСТ Р 7.0.5-2008.
     """
@@ -32,11 +36,11 @@ class TestGOST:
         :return:
         """
 
-        model = GOSTBook(book_model_fixture)
+        model = APABook(book_model_fixture)
 
         assert (
             model.formatted
-            == "Иванов И.М., Петров С.Н. Наука как искусство. – 3-е изд. – СПб.: Просвещение, 2020. – 999 с."
+            == "Иванов И.М., Петров С.Н. (2020) Наука как искусство (3-е изд. – ) СПб.: Просвещение, 999 p."
         )
 
     def test_internet_resource(
@@ -49,11 +53,11 @@ class TestGOST:
         :return:
         """
 
-        model = GOSTInternetResource(internet_resource_model_fixture)
+        model = APAInternetResource(internet_resource_model_fixture)
 
         assert (
             model.formatted
-            == "Наука как искусство // Ведомости URL: https://www.vedomosti.ru (дата обращения: 01.01.2021)."
+            == "Ведомости (01.01.2021) Наука как искусство https://www.vedomosti.ru"
         )
 
     def test_articles_collection(
@@ -66,11 +70,11 @@ class TestGOST:
         :return:
         """
 
-        model = GOSTCollectionArticle(articles_collection_model_fixture)
+        model = APACollectionArticle(articles_collection_model_fixture)
 
         assert (
             model.formatted
-            == "Иванов И.М., Петров С.Н. Наука как искусство // Сборник научных трудов. – СПб.: АСТ, 2020. – С. 25-30."
+            == "Иванов И.М., Петров С.Н. (2020) Наука как искусство, Сборник научных трудов СПб.: АСТ, 25-30 p."
         )
 
     def test_citation_formatter(  # pylint: disable=too-many-arguments
@@ -106,15 +110,15 @@ class TestGOST:
             dissertation_fixture,
             book_model_fixture,
         ]
-        results = GOSTCitationFormatter(models).format()
+        results = APACitationFormatter(models).format()
         expected = [
-            GOSTAutoReport(auto_report_fixture),
-            GOSTDissertation(dissertation_fixture),
-            GOSTJournalArticle(journal_article_fixture),
-            GOSTCollectionArticle(articles_collection_model_fixture),
-            GOSTBook(book_model_fixture),
-            GOSTInternetResource(internet_resource_model_fixture),
-            GOSTRegulationAct(regulation_act_fixture),
+            APARegulationAct(regulation_act_fixture),
+            APAInternetResource(internet_resource_model_fixture),
+            APAAutoReport(auto_report_fixture),
+            APADissertation(dissertation_fixture),
+            APABook(book_model_fixture),
+            APACollectionArticle(articles_collection_model_fixture),
+            APAJournalArticle(journal_article_fixture),
         ]
         # тестирование сортировки списка источников
         for result, exp in zip(results, expected):
@@ -128,11 +132,11 @@ class TestGOST:
         :return:
         """
 
-        model = GOSTDissertation(dissertation_fixture)
+        model = APADissertation(dissertation_fixture)
 
         assert (
             model.formatted
-            == "Иванов И.М. Наука как искусство: дис. д-р. / канд. экон.: 01.01.01 СПб. 2020. 999 c."
+            == "Иванов И.М. (2020) Наука как искусство, дис. [д-р. / канд. экон. 01.01.01] СПб., 999 p."
         )
 
     def test_auto_report(self, auto_report_fixture: AutoReportModel) -> None:
@@ -143,11 +147,11 @@ class TestGOST:
         :return:
         """
 
-        model = GOSTAutoReport(auto_report_fixture)
+        model = APAAutoReport(auto_report_fixture)
 
         assert (
             model.formatted
-            == "Иванов И.М. Наука как искусство: автореф. дис. д-р. / канд. экон.: 01.01.01 СПб. 2020. 999 c."
+            == "Иванов И.М. (2020) Наука как искусство, автореф. дис. [д-р. / канд. экон. 01.01.01] СПб., 999 p."
         )
 
     def test_journal_article(
@@ -160,11 +164,11 @@ class TestGOST:
         :return:
         """
 
-        model = GOSTJournalArticle(journal_article_fixture)
+        model = APAJournalArticle(journal_article_fixture)
 
         assert (
             model.formatted
-            == "Иванов И.М., Петров С.Н. Наука как искусство // Научный журнал. 2020. № 1. С. 25-30."
+            == "Иванов И.М., Петров С.Н. (2020) Наука как искусство. Научный журнал, 1 25-30 p."
         )
 
     def test_regulation_act(self, regulation_act_fixture: RegulationActModel) -> None:
@@ -175,9 +179,9 @@ class TestGOST:
         :return:
         """
 
-        model = GOSTRegulationAct(regulation_act_fixture)
+        model = APARegulationAct(regulation_act_fixture)
 
         assert (
             model.formatted
-            == "Наука как искусство: Федеральный закон от 01.01.2021. №123: в ред. от 01.01.2021 // Научный журнал 2020"
+            == "(2020) Наука как искусство, Федеральный закон, Научный журнал, 123, edited 01.01.2021"
         )

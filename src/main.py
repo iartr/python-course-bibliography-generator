@@ -5,17 +5,20 @@ from enum import Enum, unique
 
 import click
 
+from formatters.base import BaseCitationFormatter
+from formatters.styles.apa import APACitationFormatter
 from formatters.styles.gost import GOSTCitationFormatter
 from logger import get_logger
 from readers.reader import SourcesReader
 from renderer import Renderer
+from readers.renderer import APARenderer, GOSTRenderer
 from settings import INPUT_FILE_PATH, OUTPUT_FILE_PATH
 
 logger = get_logger(__name__)
 
 
 @unique
-class CitationEnum(Enum):
+class CitationEnum(str, Enum):
     """
     Поддерживаемые типы цитирования.
     """
@@ -25,12 +28,25 @@ class CitationEnum(Enum):
     APA = "apa"  # American Psychological Association
 
 
+def get_citation_classes(
+    citation: str,
+) -> tuple[type[BaseCitationFormatter], type[Renderer]]:
+    match citation:
+        case CitationEnum.GOST:
+            return GOSTCitationFormatter, GOSTRenderer
+        case CitationEnum.MLA:
+            raise NotImplementedError
+        case CitationEnum.APA:
+            return APACitationFormatter, APARenderer
+    return GOSTCitationFormatter, GOSTRenderer
+
+
 @click.command()
 @click.option(
     "--citation",
     "-c",
     "citation",
-    type=click.Choice([item.name for item in CitationEnum], case_sensitive=False),
+    type=click.Choice(list(CitationEnum), case_sensitive=False),
     default=CitationEnum.GOST.name,
     show_default=True,
     help="Стиль цитирования",
@@ -54,7 +70,7 @@ class CitationEnum(Enum):
     help="Путь к выходному файлу",
 )
 def process_input(
-    citation: str = CitationEnum.GOST.name,
+    citation: str = CitationEnum.GOST,
     path_input: str = INPUT_FILE_PATH,
     path_output: str = OUTPUT_FILE_PATH,
 ) -> None:
@@ -75,14 +91,12 @@ def process_input(
         path_input,
         path_output,
     )
-
+    formatter, renderer = get_citation_classes(citation)
     models = SourcesReader(path_input).read()
-    formatted_models = tuple(
-        str(item) for item in GOSTCitationFormatter(models).format()
-    )
+    formatted_models = tuple(str(item) for item in formatter(models).format())
 
     logger.info("Генерация выходного файла ...")
-    Renderer(formatted_models).render(path_output)
+    renderer(formatted_models).render(path_output)
 
     logger.info("Команда успешно завершена.")
 

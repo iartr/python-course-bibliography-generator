@@ -158,3 +158,8 @@
 
 .. automodule:: formatters.models
     :members:
+
+Генерация стилей APA
+=====================
+..  automodule:: formatters.styles.apa
+    :members:
